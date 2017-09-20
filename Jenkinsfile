@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage("unit-tests") {
       steps {
-        sh "docker-compose -f docker-compose-test.yml run --rm unit"
+        sh "docker-compose run --rm unit"
       }
     }
   }
