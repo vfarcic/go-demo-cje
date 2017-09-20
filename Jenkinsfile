@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage("unit-tests") {
       steps {
-        sh "docker-compose run --rm unit"
+        sh "docker image build -f Dockerfile.test -t vfarcic/go-demo-cje-test:${env.BRANCH_NAME}-${env.BUILD_NUMBER} ."
       }
     }
   }
