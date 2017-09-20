@@ -17,7 +17,7 @@ pipeline {
     }
     stage("build") {
       environment {
-        BETA_TAG = "beta-${env.BRANCH_NAME}-${env.BUILD_NUMBER}""
+        BETA_TAG = "beta-${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
       }
       steps {
         sh "docker image build -t vfarcic/go-demo-cje:beta-${env.BETA_TAG} ."
