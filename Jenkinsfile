@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat
 
 pipeline {
   agent {
-    label "test"
+    label "docker"
   }
   options {
     buildDiscarder(logRotator(numToKeepStr: "2"))
@@ -11,49 +11,25 @@ pipeline {
   stages {
     stage("checkout") {
       steps {
-        script {
-          def props = readProperties file: "/run/secrets/cluster-info.properties"
-          env.HOST_IP = props.hostIp
-          env.DOCKER_HUB_USER = props.dockerHubUser
-        }
         checkout scm
         stash name: "compose", includes: "docker-compose.yml"
       }
     }
     stage("build") {
-      steps {
-        dockerBuild("go-demo-2", env.DOCKER_HUB_USER)
-      }
-    }
-    stage("functional") {
-      steps {
-        dockerFunctional("go-demo-2", env.DOCKER_HUB_USER, env.HOST_IP, "/demo")
-      }
-    }
-    stage("release") {
-      when {
-        branch "master"
+      environment {
+        BETA_TAG = "beta-${env.BRANCH_NAME}-${env.BUILD_NUMBER}""
       }
       steps {
-        dockerRelease("go-demo-2", env.DOCKER_HUB_USER)
+        sh "docker image build -t vfarcic/go-demo-cje:beta-${env.BETA_TAG} ."
+        withCredentials([usernamePassword(
+          credentialsId: "docker",
+          usernameVariable: "USER",
+          passwordVariable: "PASS"
+        )]) {
+          sh "docker login -u '$USER' -p '$PASS'"
+        }
+        echo "docker image push vfarcic/go-demo-cje:beta-${env.BETA_TAG}"
       }
-    }
-    stage("deploy") {
-      when {
-        branch "master"
-      }
-      agent {
-        label "prod"
-      }
-      steps {
-        unstash "compose"
-        dockerDeploy("go-demo-2", env.DOCKER_HUB_USER, env.HOST_IP, "/demo")
-      }
-    }
-  }
-  post {
-    always {
-      dockerCleanup("go-demo-2")
     }
   }
 }
