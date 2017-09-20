@@ -10,11 +10,8 @@ pipeline {
   }
   stages {
     stage("unit-tests") {
-      environment {
-        TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-      }
       steps {
-        sh "TAG=${env.TAG} docker-compose run --rm unit"
+        sh "docker-compose run --rm unit"
         sh "pwd"
         sh "ls -l"
       }
