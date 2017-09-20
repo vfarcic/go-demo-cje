@@ -11,9 +11,9 @@ pipeline {
   stages {
     stage("unit-tests") {
       steps {
-        sh "docker-compose run --rm unit"
         sh "pwd"
         sh "ls -l"
+        sh "docker-compose run --rm unit"
       }
     }
   }

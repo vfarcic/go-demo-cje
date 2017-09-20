@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   unit:
-    image: golang:1.6
+    image: golang:1.9
     volumes:
       - .:/usr/src/myapp
       - /tmp/go:/go
