@@ -1,1 +1,0 @@
-go get -d -v -t && go test ./... -v --run FunctionalTest
