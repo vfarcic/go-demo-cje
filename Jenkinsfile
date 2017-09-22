@@ -17,7 +17,7 @@ pipeline {
     }
     stage("test") {
       steps {
-        sh "docker container run -it -v $PWD:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"pwd && go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
+        sh "docker container run -v $PWD:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"pwd && go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
       }
     }
     stage("release") {
