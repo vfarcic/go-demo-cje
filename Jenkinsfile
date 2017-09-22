@@ -14,12 +14,13 @@ pipeline {
         sh "java -version"
         sh "docker version"
         sh "docker-compose version"
-        sh "pwd"
         sh "ls -l"
       }
     }
     stage("test") {
       steps {
+        sh "pwd"
+        sh "echo $PWD"
         sh "docker container run -v $PWD:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
         // sh "docker-compose run --rm unit"
       }
