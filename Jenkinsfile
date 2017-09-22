@@ -15,6 +15,7 @@ pipeline {
         sh "docker version"
         sh "docker-compose version"
         sh "pwd"
+        sh "ls -l"
       }
     }
     stage("test") {
