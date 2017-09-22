@@ -16,9 +16,13 @@ pipeline {
         sh "docker-compose version"
       }
     }
-    stage("test") {
+    stage("test-docker") {
       steps {
-        // sh "docker container run -v ${workspace}:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
+        sh "docker container run -v ${workspace}:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
+      }
+    }
+    stage("test-docker-compose") {
+      steps {
         sh "docker-compose run --rm unit"
       }
     }
@@ -28,7 +32,7 @@ pipeline {
           def dateFormat = new SimpleDateFormat("yy.MM.dd")
           currentBuild.displayName = dateFormat.format(new Date()) + "-" + env.BUILD_NUMBER
         }
-        sh "docker image build -t vfarcic/go-demo-cje"
+        sh "docker image build -t vfarcic/go-demo-cje ."
         sh "docker image tag -t vfarcic/go-demo-cje vfarcic/go-demo-cje:${currentBuild.displayName}"
         withCredentials([usernamePassword(
           credentialsId: "docker",
