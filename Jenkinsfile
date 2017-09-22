@@ -16,6 +16,14 @@ pipeline {
         sh "docker-compose version"
       }
     }
+    stage("test-go") {
+      agent {
+        label "go"
+      }
+      steps {
+        sh "go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo"
+      }
+    }
     stage("test-docker") {
       steps {
         sh "docker container run -v ${workspace}:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
