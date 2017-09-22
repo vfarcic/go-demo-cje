@@ -9,11 +9,16 @@ pipeline {
     disableConcurrentBuilds()
   }
   stages {
+    stage("versions") {
+      steps {
+        sh "java -version"
+        sh "docker version"
+        sh "docker-compose version"
+      }
+    }
     stage("test") {
       steps {
-        sh "pwd"
-        sh "ls -l"
-        sh "docker-compose run --rm unit"
+        sh "docker container run -it -v .:/usr/src/myapp -w /usr/src/myapp golang:1.9 bash -c \"pwd && go get -d -v -t && go test --cover -v ./... --run UnitTest && go build -v -o go-demo\""
       }
     }
     stage("release") {
